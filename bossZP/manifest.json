@@ -1,0 +1,44 @@
+{
+  "default_locale": "zh_CN",
+  "manifest_version": 3,
+  "minimum_chrome_version": "18.0.0",
+  "name": "BOSS助手",
+  "description": "移出Boss直聘招聘列表中不在线/沟通过/薪资低的的招聘信息",
+  "options_page": "options.html",
+  "permissions": [
+    "proxy",
+    "tabs",
+    "contextMenus",
+    "webRequest",
+    "webRequestBlocking",
+    "webNavigation",
+    "unlimitedStorage",
+    "notifications",
+    "\u003Call_urls>",
+    "http://*/*",
+    "https://*/*",
+    "ftp://*/*",
+    "scripting",
+    "activeTab"
+  ],
+  "version": "1.0.0",
+  "icons": {
+    "128": "icons/icon-128.png",
+    "16": "icons/icon.png"
+  },
+  "action": {
+    "active_icon": "icons/icon.png",
+    "default_icon": "icons/icon.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "js": ["page.js"],
+      "matches": ["http://*/*", "https://*/*"],
+      "run_at": "document_end"
+    }
+  ]
+}
