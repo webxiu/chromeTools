@@ -22,6 +22,10 @@ function setItem(data) {
 function getDoms() {
   const selectType = $("#selectType"); // 换行
   const newLine = $("#newLine"); // 新行
+  const newLine2 = $("#newLine2");
+  const hiddenEdit = $("#hiddenEdit"); // 编辑隐藏
+  const hiddenEdit2 = $("#hiddenEdit2");
+
   const oneline = $("#oneline"); // 换行
   const oneline2 = $("#oneline2");
   const hidden = $("#hidden"); // 隐藏
@@ -29,7 +33,10 @@ function getDoms() {
   const sortable = $("#sortable"); // 排序
   const sortable2 = $("#sortable2");
   const content = $("#content"); // 内容
-  return { selectType, newLine, oneline, oneline2, hidden, hidden2, sortable, sortable2, content }
+  return {
+    selectType, newLine, newLine2, hiddenEdit, hiddenEdit2,
+    oneline, oneline2, hidden, hidden2, sortable, sortable2, content
+  }
 }
 
 
@@ -48,7 +55,7 @@ const configObj = {
   ],
   edit: [
     { id: "newLine", value: "newLine2", label: "是否新行", type: "checkbox", placeholder: "请输入字段名 以逗号分开", },
-    { id: "hidden", value: "hidden2", label: "是否隐藏", type: "checkbox", placeholder: "请输入字段名 以逗号分开", },
+    { id: "hiddenEdit", value: "hiddenEdit2", label: "是否隐藏", type: "checkbox", placeholder: "请输入字段名 以逗号分开", },
   ],
   dictionary: []
 }
@@ -99,17 +106,21 @@ document.addEventListener("DOMContentLoaded", function () {
   selectTypeDom.addEventListener("change", render)
 
   settingDom.addEventListener("click", function () {
-    const { selectType, newLine, oneline, oneline2, hidden, hidden2, sortable, sortable2, content } = getDoms()
+    const { selectType, newLine, newLine2, oneline, hiddenEdit, hiddenEdit2, oneline2, hidden, hidden2, sortable, sortable2, content } = getDoms()
     const formData = {
       selectType: selectType?.value,
-      newLine: newLine?.checked,
       oneline: oneline?.checked,
       oneline2: oneline2?.value,
       hidden: hidden?.checked,
       hidden2: hidden2?.value,
       sortable: sortable?.checked,
       sortable2: sortable2?.value,
-      content: content?.value
+      content: content?.value,
+
+      newLine: newLine?.checked,
+      newLine2: newLine2?.value,
+      hiddenEdit: hiddenEdit?.checked,
+      hiddenEdit2: hiddenEdit2?.value,
     };
     setItem(formData);// 更新本地数据
 

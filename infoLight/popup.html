@@ -20,6 +20,9 @@
       .flex {
         display: flex;
       }
+      .just-between {
+        justify-content: space-between;
+      }
       .flex-1 {
         flex: 1;
       }
@@ -39,8 +42,8 @@
     <div class="container">
       <div class="flex-1">
         <select name="selectType" id="selectType">
-          <option value="table">表格配置</option>
-          <option value="edit">编辑详情</option>
+          <option value="table">列表配置</option>
+          <option value="edit">修改配置</option>
           <option value="dictionary">数据字典</option>
         </select>
         <button id="setting">设置</button>
@@ -48,7 +51,15 @@
       <div class="wrap-box">
         <!-- 动态渲染 -->
       </div>
-      <div class="no-wrap">表格列配置:</div>
+      <div class="no-wrap flex just-between">
+        <span>表格列配置:</span>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://dlpctest.deogra.com/#/system/basic/menu/tableColumn?itemId=87&isNewTag=yes&menuName=%E4%BF%A1%E6%81%AF%E4%B8%AD%E5%BF%83"
+          >获取配置</a
+        >
+      </div>
       <div class="flex">
         <textarea
           name="content"
