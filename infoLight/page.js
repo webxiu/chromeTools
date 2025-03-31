@@ -80,7 +80,7 @@ async function setTableColumns(data) {
       const topWrap = fieldWrap.parentNode.parentNode.parentNode;
       topWrap.id = "autoId";
       const fieldNodes = fieldWrap.querySelectorAll(".tree-node");
-      const list = getEle(fieldNodes).slice(0, 6)
+      const list = getEle(fieldNodes)
       for (let i = 0; i < list.length; i++) {
         const ele = list[i];
         const prop = ele.querySelector('span:nth-child(3)').innerText.split(' (')[0];
