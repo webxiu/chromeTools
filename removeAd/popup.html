@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Element Remover</title>
+    <script src="./popup.js"></script>
+    <style>
+      * {
+        padding: 10px;
+        margin: 0;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+      }
+      .w-100 {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="width: 300px; height: 80px">
+      <h3>右键点击插件图标以移除元素</h3>
+      <textarea
+        name="content"
+        id="content"
+        value="#aaaa,#bbbb"
+        rows="5"
+        class="w-100"
+        placeholder="请输入元素选择器 使用逗号分开"
+      ></textarea>
+      <button id="setting">设置</button>
+      <button id="stop">停止</button>
+    </div>
+  </body>
+</html>

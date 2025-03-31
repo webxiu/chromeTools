@@ -1,0 +1,46 @@
+{
+  "name": "讯光助手",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "minimum_chrome_version": "18.0.0",
+  "description": "讯光字段标题批量修改",
+  "permissions": [
+    "proxy",
+    "tabs", 
+    "webRequest",
+    "webRequestBlocking",
+    "webNavigation",
+    "unlimitedStorage",
+    "notifications",
+    "\u003Call_urls>",
+    "http://*/*",
+    "https://*/*",
+    "ftp://*/*",
+    "contextMenus",
+    "activeTab",
+    "scripting"
+  ],
+  "icons": {
+    "16": "img/icon@16.png",
+    "32": "img/icon@32.png",
+    "64": "img/icon@64.png",
+    "128": "img/icon@128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "active_icon": "img/icon@64.png",
+    "default_icon": "img/icon@64.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "js": [ "page.js"],
+      "css": ["css/vote.css"],
+      "matches": ["http://*/*", "https://*/*"],
+      "run_at": "document_end"
+    }
+  ]
+}

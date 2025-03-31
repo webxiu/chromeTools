@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Element Remover</title>
+    <script src="./popup.js"></script>
+    <style>
+      * {
+        padding: 6px;
+        margin: 0;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+      }
+      .w-100 {
+        width: 100%;
+      }
+      .flex {
+        display: flex;
+      }
+      .flex-1 {
+        flex: 1;
+      }
+      .no-wrap {
+        white-space: nowrap;
+      }
+      .container {
+        width: 400px;
+        background: #f1f1f1;
+      }
+      textarea {
+        resize: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="flex-1">
+        <button id="setting">设置</button>
+        <button id="stop">停止</button>
+      </div>
+      <div class="flex">
+        <label for="oneline" class="no-wrap">
+          是否换行<input id="oneline" type="checkbox" />
+        </label>
+        <textarea
+          name="oneline2"
+          id="oneline2"
+          value="#aaaa,#bbbb"
+          rows="1"
+          class="w-100"
+          placeholder="请输入字段名 以逗号分开"
+        ></textarea>
+      </div>
+      <div class="flex">
+        <label for="hidden" class="no-wrap">
+          是否隐藏<input id="hidden" type="checkbox" />
+        </label>
+        <textarea
+          name="hidden2"
+          id="hidden2"
+          value="#aaaa,#bbbb"
+          rows="1"
+          class="w-100"
+          placeholder="请输入字段名 以逗号分开"
+        ></textarea>
+      </div>
+      <div class="flex">
+        <label for="sortable" class="no-wrap">
+          是否排序<input id="sortable" type="checkbox" />
+        </label>
+        <textarea
+          name="sortable2"
+          id="sortable2"
+          value="#aaaa,#bbbb"
+          rows="1"
+          class="w-100"
+          placeholder="请输入字段名 以逗号分开"
+        ></textarea>
+      </div>
+      <div class="no-wrap">表格列配置:</div>
+      <div class="flex">
+        <textarea
+          name="content"
+          id="content"
+          value="#aaaa,#bbbb"
+          rows="10"
+          class="w-100"
+          placeholder="请输入元素选择器 使用逗号分开"
+        ></textarea>
+      </div>
+    </div>
+  </body>
+</html>

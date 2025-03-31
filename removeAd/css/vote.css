@@ -1,0 +1,42 @@
+.align-center {
+  justify-content: center;
+}
+
+.xh_box {
+  z-index: 334455;
+  position: fixed;
+  top: 17%;
+  left: 50%;
+  background-color: #fff;
+  border-radius: 4px;
+  font-size: 16px;
+  overflow: hidden;
+  box-shadow: 0px 0px 1px 2px #4e6ef2;
+}
+.header {
+  text-align: center;
+  font-size: 18px;
+  color: #fff;
+  cursor: pointer;
+  background-color: #4e6ef2;
+}
+.body {
+  padding: 10px 20px;
+  font-size: 18px;
+  text-align: left;
+}
+.body .form-item {
+  margin: 15px 0;
+  display: flex;
+}
+.body .form-item input,
+.body .form-item select {
+  flex: 1;
+  border: 1px solid rgb(133, 133, 133);
+}
+
+.body label {
+  width: 120px;
+  display: inline-block;
+  text-align: right;
+}
