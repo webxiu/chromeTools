@@ -1,4 +1,7 @@
-console.log("讯光插件启用:page.js");
+console.log("讯光插件启用");
+
+// 全局变量
+var oIns = null;
 
 // 自动更新标题 
 function sleep(ms) {
@@ -55,7 +58,7 @@ function getField(str) {
 }
 
 // 修改表格与修改列标题及属性
-async function setTableColumns(data) {
+async function setTableColumns(data, callback) {
   // 当切换选择: 重置列表配置或修改配置
   if (data.selectType === 'table') {
     Object.assign(data, { newLine: undefined, hiddenEdit: undefined })
@@ -82,12 +85,12 @@ async function setTableColumns(data) {
       const fieldNodes = fieldWrap.querySelectorAll(".tree-node");
       const list = getEle(fieldNodes)
       for (let i = 0; i < list.length; i++) {
+        if (window.isStop) break;
         const ele = list[i];
         const prop = ele.querySelector('span:nth-child(3)').innerText.split(' (')[0];
         const item = columns.find(item => item.prop === prop)
-        const filterFields = ['id'] // 不修改的字段
+        const filterFields = ['id'] // 不修改的字段列表
         printAligned(`prop: ${prop}`, item?.label || '==========字段不存在');
-
 
         // 获取属性类名
         function getClass(trIndex, tdIndex) {
@@ -98,6 +101,7 @@ async function setTableColumns(data) {
 
         const myList = Object.keys(data)
         for (let i = 0; i < myList.length; i++) {
+          if (window.isStop) break;
           const key = myList[i]
           if (typeof data[key] === 'boolean' && !filterFields.includes(prop)) {
             const pos = rowPos[key]
@@ -121,17 +125,13 @@ async function setTableColumns(data) {
               nowrapCheckDom.checked = !!data[key];
               await sleep(300);
             }
-
           }
-
         };
-
-
       }
     }
+    callback()
     console.log('执行完毕');
     showMessage('执行完毕');
-
   } catch (error) {
     console.error('报错:', error);
     return showMessage('数据格式错误', '#f60');
@@ -139,7 +139,7 @@ async function setTableColumns(data) {
 }
 
 // 更新枚举字典标题方法
-async function setDataDictionaryTitle(data) {
+async function setDataDictionaryTitle(data, callback) {
   const columns = JSON.parse(data.content);
   try {
     var showTab = getActiveTab(".info-table.panel-noscroll");
@@ -162,6 +162,7 @@ async function setDataDictionaryTitle(data) {
         }
       }
     }
+    callback()
     console.log('执行完毕');
     showMessage('执行完毕');
 
@@ -172,17 +173,27 @@ async function setDataDictionaryTitle(data) {
 
 
 function addMessageListener() {
-  // 接收background.js中的数据
+  // 事件监听
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { action, data, tabId } = message || {}
-    if (action !== "SET_TITLE") return
-    if (['table', 'edit'].includes(data.selectType)) {
-      setTableColumns(data);
+    function sendRes() {
+      window.isStop = false
+      sendResponse({ success: true });
     }
-    if (data.selectType === 'dictionary') {
-      setDataDictionaryTitle(data);
+    // 开始
+    if (action === "Start_Event") {
+      window.isStop = false
+      if (['table', 'edit'].includes(data.selectType)) {
+        setTableColumns(data, sendRes);
+      } else if (data.selectType === 'dictionary') {
+        setDataDictionaryTitle(data, sendRes);
+      } else {
+        sendRes()
+      }
     }
-    sendResponse({ success: true });
+    // 停止
+    if (action === "Stop_Event") window.isStop = true
+    return true
   });
 }
 
@@ -190,4 +201,5 @@ function addMessageListener() {
 if (!window.messageListenerAdded) {
   addMessageListener();
   window.messageListenerAdded = true;
+  window.isStop = false
 }
