@@ -219,6 +219,8 @@ if (!window.messageListenerAdded) {
 }
 
 window.onload = function () {
+  const treeMenu = document.querySelector('#layoutMainWest #treeMenu');
+  if (!treeMenu) return
   const menuPathObj = JSON.parse(localStorage.getItem('__Menu_Path') || '{}');
 
   // ============================= 记录点击菜单 =============================
@@ -311,7 +313,7 @@ window.onload = function () {
     }
     next();
   }
-  const savedPath = JSON.parse(localStorage.getItem('__menu_path'));
+  const savedPath = JSON.parse(localStorage.getItem('__menu_path') || '[]');
   // console.log(`菜单路径:`, savedPath)
   if (savedPath?.length > 0 && menuPathObj.menuPath) {
     const time = `${menuPathObj.menuPath2 || 1000}`;
