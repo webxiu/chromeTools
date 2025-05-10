@@ -45,6 +45,15 @@
         border-color: #84ff77;
       }
       #stop {
+        background: #4addc5;
+        border-color: #4addc5;
+      }
+      #menu {
+        background: #9cadff;
+        border-color: #9cadff;
+        margin-left: 20px;
+      }
+      #clear {
         background: #ff6b3d;
         border-color: #ff6b3d;
       }
@@ -52,14 +61,20 @@
   </head>
   <body>
     <div class="container">
-      <div class="flex-1">
-        <select name="selectType" id="selectType">
-          <option value="table">列表配置</option>
-          <option value="edit">修改配置</option>
-          <option value="dictionary">数据字典</option>
-        </select>
-        <button id="start">开始</button>
-        <button id="stop">停止</button>
+      <div class="flex flex-1">
+        <div>
+          <select name="selectType" id="selectType">
+            <option value="table">列表配置</option>
+            <option value="edit">修改配置</option>
+            <option value="dictionary">数据字典</option>
+          </select>
+          <button id="start">开始</button>
+          <button id="stop">停止</button>
+          <button id="clear">清空缓存</button>
+        </div>
+        <div style="margin-left: auto">
+          <button id="menu">设置菜单</button>
+        </div>
       </div>
       <div class="wrap-box">
         <!-- 动态渲染 -->

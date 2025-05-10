@@ -72,10 +72,8 @@ async function setTableColumns(data, callback) {
     newLine: [3, 2],
     hiddenEdit: [5, 2],
   }
-  const columns = JSON.parse(data.content);
-  if (!columns.length || !data.content) {
-    return showMessage('数据不能为空', '#f60');
-  }
+  const columns = JSON.parse(data.content || '[]');
+  // if (!columns.length) return showMessage('数据不能为空', '#f60');
 
   try {
     var fieldWrap = dom(".designer-member.tree");
@@ -83,7 +81,7 @@ async function setTableColumns(data, callback) {
       const topWrap = fieldWrap.parentNode.parentNode.parentNode;
       topWrap.id = "autoId";
       const fieldNodes = fieldWrap.querySelectorAll(".tree-node");
-      const list = getEle(fieldNodes)
+      const list = getEle(fieldNodes);
       for (let i = 0; i < list.length; i++) {
         if (window.isStop) break;
         const ele = list[i];
@@ -98,8 +96,7 @@ async function setTableColumns(data, callback) {
           const className = `${tableClass} tr:nth-child(${trIndex}) td:nth-child(${tdIndex}) div`
           return className
         }
-
-        const myList = Object.keys(data)
+        const myList = Object.keys(data); // 获取所有属性 
         for (let i = 0; i < myList.length; i++) {
           if (window.isStop) break;
           const key = myList[i]
@@ -114,9 +111,18 @@ async function setTableColumns(data, callback) {
             rowTitle.click(); // 点击标题唤出输入框
             const input = rowTitle.querySelector('input')
             if (input && item) input.value = item.label// 修改标题
-
-            // 修改属性
-            if (fieldList.includes(prop) || !fieldList.length) {
+            // 指定更新字段: 列表长度判断
+            if (fieldList.length) {
+              if (fieldList.includes(prop)) {
+                const nowrapDom = dom(getClass(pos[0], pos[1]));
+                nowrapDom.click()
+                await sleep(300);
+                nowrapDom.click()
+                const nowrapCheckDom = nowrapDom.querySelector('input[type="checkbox"]');
+                nowrapCheckDom.checked = !!data[key];
+                await sleep(300);
+              }
+            } else {
               const nowrapDom = dom(getClass(pos[0], pos[1]));
               nowrapDom.click()
               await sleep(300);
@@ -176,9 +182,15 @@ function addMessageListener() {
   // 事件监听
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { action, data, tabId } = message || {}
+    // console.log('message', message)
     function sendRes() {
       window.isStop = false
       sendResponse({ success: true });
+    }
+    // 初始化
+    if (action === "Menu_Event") {
+      sendRes()
+      localStorage.setItem('__Menu_Path', JSON.stringify(data))
     }
     // 开始
     if (action === "Start_Event") {
@@ -192,7 +204,9 @@ function addMessageListener() {
       }
     }
     // 停止
-    if (action === "Stop_Event") window.isStop = true
+    if (action === "Stop_Event") {
+      window.isStop = true
+    }
     return true
   });
 }
@@ -202,4 +216,105 @@ if (!window.messageListenerAdded) {
   addMessageListener();
   window.messageListenerAdded = true;
   window.isStop = false
+}
+
+window.onload = function () {
+  const menuPathObj = JSON.parse(localStorage.getItem('__Menu_Path') || '{}');
+
+  // ============================= 记录点击菜单 =============================
+  // 监听treeMenu的点击事件（事件委托）
+  treeMenu.addEventListener('click', function (e) {
+    if (!menuPathObj.menuPath) {
+      return
+    }
+    const isHumanClick = e.isTrusted; // true=人为触发，false=脚本触发
+    const treeNode = e.target.closest('.tree-node');
+    if (treeNode) {
+      const title = treeNode.querySelector('.tree-title').textContent;
+      const path = [title];
+      let parentLi = treeNode.closest('ul')?.closest('li');
+      while (parentLi) {
+        const parentTitle = parentLi.querySelector('.tree-title')?.textContent;
+        if (parentTitle) {
+          path.unshift(parentTitle);
+        }
+        parentLi = parentLi.closest('ul')?.closest('li');
+      }
+      if (isHumanClick) {
+        localStorage.setItem('__menu_path', JSON.stringify(path));
+      }
+    }
+  });
+  // ============================= 按菜单点击回显 =============================
+
+  function expandTreePath(path, delay = 800) {
+    let index = 0;
+    function next() {
+      if (index >= path.length) return;
+
+      const titleText = path[index];
+
+      // 找到所有 .tree-title 中文本匹配的元素
+      const titleElements = Array.from(document.querySelectorAll('.tree-title'))
+        .filter(el => el.textContent.trim() === titleText);
+
+      if (titleElements.length === 0) {
+        // console.warn(`未找到标题为 "${titleText}" 的节点`);
+        index++;
+        setTimeout(next, delay);
+        return;
+      }
+
+      const titleEl = titleElements[0];
+      const nodeEl = titleEl.closest('div.tree-node') || titleEl.parentElement.closest('div.tree-node');
+
+      if (!nodeEl) {
+        // console.warn(`找不到 ${titleText} 的父 div.tree-node 节点`);
+        index++;
+        setTimeout(next, delay);
+        return;
+      }
+
+      const hitEl = nodeEl.querySelector('.tree-hit');
+      const iconEl = nodeEl.querySelector('.tree-icon');
+
+      // 如果没有展开按钮或图标，则直接点击该节点
+      if (!hitEl || !iconEl) {
+        // console.log(`${titleText} 没有展开按钮或图标，尝试点击节点本身`);
+        nodeEl.click();
+        index++;
+        setTimeout(next, delay);
+        return;
+      }
+
+      // 如果是叶子节点，跳过
+      if (iconEl.classList.contains('tree-file')) {
+        // console.log(`${titleText} 是叶子节点，无需展开`);
+        index++;
+        setTimeout(next, delay);
+        return;
+      }
+
+      // 如果已经是展开状态，跳过
+      if (hitEl.classList.contains('tree-expanded')) {
+        // console.log(`${titleText} 已展开`);
+        index++;
+        setTimeout(next, delay);
+        return;
+      }
+
+      // 点击展开按钮来展开节点
+      hitEl.click();
+      // console.log(`正在展开：${titleText}`); 
+      index++;
+      setTimeout(next, delay); // 等待子级加载后再继续
+    }
+    next();
+  }
+  const savedPath = JSON.parse(localStorage.getItem('__menu_path'));
+  // console.log(`菜单路径:`, savedPath)
+  if (savedPath?.length > 0 && menuPathObj.menuPath) {
+    const time = `${menuPathObj.menuPath2 || 1000}`;
+    expandTreePath(savedPath, +time);
+  }
 }
