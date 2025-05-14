@@ -134,7 +134,7 @@ const commonList = [
 // 发送消息到后台
 function _sendMessage(data, callback) {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, data, (response) => {
+    chrome.runtime.sendMessage({ ...data, tabId: tabs[0].id }, (response) => {
       console.log("popup响应信息:", data.action, response);
       if (typeof callback === 'function') callback(response);
       if (chrome.runtime.lastError) {
@@ -248,12 +248,13 @@ document.addEventListener("DOMContentLoaded", function () {
       menuPath2: menuPath2?.value,
     };
     setItem(formData); // 更新本地数据 
+    return formData
   }
 
 
   startDom.addEventListener("click", function () {
     if (isDisable) return alert("处理中, 请稍后...");
-    setLocalCache()
+    const formData = setLocalCache()
     setDisable(true);
 
     _sendMessage({ action: "Start_Event", data: formData, }, (response) => {

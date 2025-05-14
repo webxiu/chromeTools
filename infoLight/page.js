@@ -180,9 +180,9 @@ async function setDataDictionaryTitle(data, callback) {
 
 function addMessageListener() {
   // 事件监听
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    const { action, data, tabId } = message || {}
-    // console.log('message', message)
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    const { action, data, tabId } = request || {}
+    console.log('消息:', request)
     function sendRes() {
       window.isStop = false
       sendResponse({ success: true });
